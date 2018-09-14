@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
@@ -12,7 +13,7 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-        <!--
+        <!--IOC
 
         <context:annotation-config />
 
@@ -26,6 +27,29 @@
             <property name="name" value="product1" />
             <property name="category" ref="c" />
         </bean>
+
+        <context:component-scan base-package="pojo"></context:component-scan>
         -->
-    <context:component-scan base-package="pojo"></context:component-scan>
+    <!--
+    声明业务对象
+    <bean name="s" class="service.ProductService">
+    </bean>
+    声明日志切面
+    <bean id="loggerAspect" class="aspect.LoggerAspect"/>
+    <aop:config>
+        指定核心业务功能
+        <aop:pointcut id="loggerCutpoint"
+                      expression=
+                              "execution(* service.ProductService.*(..)) "/>    * 返回任意类型,   包名以 service.ProductService 开头的类的任意方法,   (..) 参数是任意数量和类型
+        指定辅助业务功能
+        <aop:aspect id="logAspect" ref="loggerAspect">
+            <aop:around pointcut-ref="loggerCutpoint" method="log"/>
+        </aop:aspect>
+    </aop:config>
+    -->
+    <!--扫描这俩包，定位业务类和切面类-->
+    <context:component-scan base-package="aspect"/>
+    <context:component-scan base-package="service"/>
+    <!--找到被注解了的切面类，进行切面配置-->
+    <aop:aspectj-autoproxy/>
 </beans>
